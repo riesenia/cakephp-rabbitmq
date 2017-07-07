@@ -1,0 +1,25 @@
+{
+    "name": "riesenia/cakephp-rabbitmq",
+    "description": "RabbitMQ plugin for CakePHP",
+    "keywords": ["cakephp", "rabbitmq"],
+    "type": "cakephp-plugin",
+    "license": "MIT",
+    "require": {
+        "cakephp/cakephp": "^3.4",
+        "php-amqplib/php-amqplib": "^2.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7|^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "RabbitMQ\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "RabbitMQ\\Test\\": "tests",
+            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
+        }
+    }
+}
