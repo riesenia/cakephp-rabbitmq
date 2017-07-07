@@ -95,9 +95,9 @@ class MeaningfulTime
             return $this->_parseHour($hr);
         } else {
             if ($min == 1) {
-                return $this->_parseHour($hr) . sprintf('%d min', $min);
+                return $this->_parseHour($hr) . sprintf(', %d min', $min);
             } else {
-                return $this->_parseHour($hr) . sprintf('%d mins', $min);
+                return $this->_parseHour($hr) . sprintf(', %d mins', $min);
             }
         }
     }
