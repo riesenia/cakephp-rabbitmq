@@ -1,12 +1,11 @@
 <?php
-
 namespace RabbitMQ\Shell;
 
 use RabbitMQ\CakephpRabbitMQ;
 
 use Cake\Console\Shell;
 
-class RabbitmqShell extends Shell 
+class RabbitmqShell extends Shell
 {
     /**
      * Tasks to load and instantiate
@@ -25,12 +24,14 @@ class RabbitmqShell extends Shell
         $parser = parent::getOptionParser();
 
         $parser->description('Cakephp-RabbitMQ shell')
-            ->addSubcommands([
+            ->addSubcommands(
+                [
                 'server' => [
                     'help' => 'Start the server',
                     'parser' => $this->Server->getOptionParser()
                 ]
-            ]);
+                ]
+            );
 
         return $parser;
     }

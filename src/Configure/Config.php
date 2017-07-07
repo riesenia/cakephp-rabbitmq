@@ -1,5 +1,4 @@
 <?php
-
 namespace RabbitMQ\Configure;
 
 use Cake\Core\Configure;
@@ -40,13 +39,13 @@ class Config
     /**
      * Get queue configurations according to the keys provided
      *
-     * @param array $keys
+     * @param  array $keys
      * @return array queue configurations
      */
     public static function getConfigs(array $keys)
     {
         $configs = [];
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             $configs[$key] = static::get($key);
         }
         return $configs;
@@ -55,7 +54,7 @@ class Config
     /**
      * Get a queue configuration according to the key
      *
-     * @param string $key
+     * @param  string $key
      * @return array queue configuration
      * @throws InvalidArgumentException if config specified by key not found\
      * @throws InvalidArgumentException if key is 'server'
@@ -87,7 +86,7 @@ class Config
         }
         if ($callbackCount == 0) {
             throw new \InvalidArgumentException('Queue "' . $key . '" has no valid callback');
-        } else if ($callbackCount > 1) {
+        } elseif ($callbackCount > 1) {
             throw new \InvalidArgumentException('Queue "' . $key . '" has too many callback');
         }
 
@@ -99,15 +98,21 @@ class Config
 
         // Add retry redirect arguments if retry is true
         if ($config['retry']) {
-            $config['queue']['arguments'] = array_merge($config['queue']['arguments'], [
+            $config['queue']['arguments'] = array_merge(
+                $config['queue']['arguments'],
+                [
                 'x-dead-letter-exchange' => [ 'S', $config['retry_exchange']['name'] ],
                 'x-dead-letter-routing-key' => [ 'S', $config['retry_routing_key'] ]
-            ]);
-            $config['retry_queue']['arguments'] = array_merge($config['retry_queue']['arguments'], [
-                'x-message-ttl' => [ 'I', $config['retry_time'] ], 
+                ]
+            );
+            $config['retry_queue']['arguments'] = array_merge(
+                $config['retry_queue']['arguments'],
+                [
+                'x-message-ttl' => [ 'I', $config['retry_time'] ],
                 'x-dead-letter-exchange' => [ 'S', $config['exchange']['name'] ],
                 'x-dead-letter-routing-key' => [ 'S', $config['routing_key'] ]
-            ]);
+                ]
+            );
         } else {
             unset($config['retry']['retry_time']);
             unset($config['retry']['retry_exchange']);
@@ -120,14 +125,14 @@ class Config
     }
 
     /**
-     * Get and generate default configuration according to the key 
+     * Get and generate default configuration according to the key
      *
-     * @param string $key
+     * @param  string $key
      * @return array default queue configuration
      */
     protected static function _getDefaultConfig(string $key)
     {
-        $defaultConfig = require(self::DEFAULT_CONFIG);
+        $defaultConfig = include self::DEFAULT_CONFIG;
         // Generate dynamic default configs
         $defaultConfig['exchange']['name'] = $key . '_exchange';
         $defaultConfig['queue']['name'] = $key . '_queue';
@@ -151,7 +156,7 @@ class Config
         }
 
         $userServerConfigs = Configure::read(self::SERVER_CONFIGURE_KEY) ?: [];
-        $defaultServerConfig = require(self::SERVER_DEFAULT);
+        $defaultServerConfig = include self::SERVER_DEFAULT;
         static::$_server = array_merge($defaultServerConfig, $userServerConfigs);
         return static::$_server;
     }

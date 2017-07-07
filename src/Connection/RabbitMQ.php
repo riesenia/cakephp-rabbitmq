@@ -1,5 +1,4 @@
 <?php
-
 namespace RabbitMQ\Connection;
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -14,8 +13,8 @@ class RabbitMQ
     /**
      * Listen all queue provided in configs
      *
-     * @param array $server
-     * @param array $configs
+     * @param  array $server
+     * @param  array $configs
      * @return void
      */
     public static function listen(array $server, array $configs)
@@ -28,8 +27,8 @@ class RabbitMQ
             static::_declareQueue($channel, $config['queue']);
 
             $channel->queue_bind(
-                $config['queue']['name'], 
-                $config['exchange']['name'], 
+                $config['queue']['name'],
+                $config['exchange']['name'],
                 $config['routing_key']
             );
 
@@ -38,8 +37,8 @@ class RabbitMQ
                 static::_declareQueue($channel, $config['retry_queue']);
 
                 $channel->queue_bind(
-                    $config['retry_queue']['name'], 
-                    $config['retry_exchange']['name'], 
+                    $config['retry_queue']['name'],
+                    $config['retry_exchange']['name'],
                     $config['retry_routing_key']
                 );
             }
@@ -51,17 +50,17 @@ class RabbitMQ
             );
 
             $channel->basic_consume(
-                $config['queue']['name'], 
-                $config['basic_consume']['consumer-tag'], 
-                $config['basic_consume']['no-local'], 
-                $config['basic_consume']['no-ack'], 
-                $config['basic_consume']['exclusive'], 
-                $config['basic_consume']['no-wait'], 
+                $config['queue']['name'],
+                $config['basic_consume']['consumer-tag'],
+                $config['basic_consume']['no-local'],
+                $config['basic_consume']['no-ack'],
+                $config['basic_consume']['exclusive'],
+                $config['basic_consume']['no-wait'],
                 $config['_callback']
             );
         }
 
-        while(count($channel->callbacks)) {
+        while (count($channel->callbacks)) {
             $channel->wait();
         }
 
@@ -72,9 +71,9 @@ class RabbitMQ
     /**
      * Send message to queue that provided
      *
-     * @param array $server
-     * @param array $config
-     * @param string $messsage
+     * @param  array  $server
+     * @param  array  $config
+     * @param  string $messsage
      * @return void
      */
     public static function send(array $server, array $config, string $messsage)
@@ -93,15 +92,15 @@ class RabbitMQ
     /**
      * Create the connection according to the config provided
      *
-     * @param array $server
+     * @param  array $server
      * @return AMQPStreamConnection
      */
     protected static function _newAMQPConnection(array $server)
     {
         return new AMQPStreamConnection(
-            $server['host'], 
-            $server['port'], 
-            $server['user'], 
+            $server['host'],
+            $server['port'],
+            $server['user'],
             $server['password'],
             $server['vhost'],
             $server['insist'],
@@ -119,15 +118,15 @@ class RabbitMQ
     /**
      * Decalre a exchange according to the config provided
      *
-     * @param AMQPChannel $channel
-     * @param array $config
+     * @param  AMQPChannel $channel
+     * @param  array       $config
      * @return void
      */
     protected static function _declareExchange(AMQPChannel $channel, array $config)
     {
         $channel->exchange_declare(
-            $config['name'], 
-            $config['type'], 
+            $config['name'],
+            $config['type'],
             $config['passive'],
             $config['durable'],
             $config['auto-delete'],
@@ -140,19 +139,19 @@ class RabbitMQ
     /**
      * Decalre a queue according to the config provided
      *
-     * @param AMQPChannel $channel
-     * @param array $config
+     * @param  AMQPChannel $channel
+     * @param  array       $config
      * @return void
      */
     protected static function _declareQueue(AMQPChannel $channel, array $config)
     {
         $channel->queue_declare(
-            $config['name'], 
-            $config['passive'], 
-            $config['durable'], 
-            $config['exclusive'], 
-            $config['auto-delete'], 
-            $config['no-wait'], 
+            $config['name'],
+            $config['passive'],
+            $config['durable'],
+            $config['exclusive'],
+            $config['auto-delete'],
+            $config['no-wait'],
             $config['arguments']
         );
     }

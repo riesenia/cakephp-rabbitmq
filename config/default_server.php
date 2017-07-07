@@ -1,10 +1,9 @@
 <?php
-
 /**
- * Default configuration for the rabbitmq server
+ * Default configuration for the RabbitMQ server
  */
  return [
-    'host' => 'localhsot',
+    'host' => 'localhost',
     'port' => 5672,
     'user' => 'guest',
     'password' => 'guest',

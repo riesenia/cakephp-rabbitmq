@@ -1,5 +1,4 @@
 <?php
-
 namespace RabbitMQ\Helper;
 
 /**
@@ -18,8 +17,8 @@ class ColorfulConsole
     /**
      * Print a colored message according to the state provided
      *
-     * @param string $state
-     * @param string $message
+     * @param  string $state
+     * @param  string $message
      * @return void
      */
     public function __invoke(string $state, string $message)

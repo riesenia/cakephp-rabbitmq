@@ -1,5 +1,4 @@
 <?php
-
 namespace RabbitMQ;
 
 use RabbitMQ\Configure\Config;
@@ -16,7 +15,7 @@ class CakephpRabbitMQ
      * Read the configs according to the key provided and listen to them,
      * listen all if not key is specified
      *
-     * @param array $keys
+     * @param  array $keys
      * @return void
      */
     public static function listen(array $keys = [])
@@ -42,29 +41,29 @@ class CakephpRabbitMQ
     /**
      * Generate internal callback function for queue
      *
-     * @param string $key
-     * @param array $config
+     * @param  string $key
+     * @param  array  $config
      * @return function($message)
      */
     protected static function _callback(string $key, array $config)
     {
         // Generate the callback according to the callback type provided
-        $callback = NULL;
+        $callback = null;
         
         // Callable
         if (!empty($config['callback'])) {
             $callback = $config['callback'];
-        // Command
-        } else if (!empty($config['command'])) {
+            // Command
+        } elseif (!empty($config['command'])) {
             $command = $config['command'];
-            $callback = function($message) use ($command) {
+            $callback = function ($message) use ($command) {
                 exec($command . ' ' . $message->body, $output, $result);
                 return $result;
             };
-        // Cakephp command
-        } else if (!empty($config['cake_command'])) {
+            // Cakephp command
+        } elseif (!empty($config['cake_command'])) {
             $cakeCommand = $config['cake_command'];
-            $callback = function($message) use ($cakeCommand) {
+            $callback = function ($message) use ($cakeCommand) {
                 exec('bin' . DS . 'cake ' . $cakeCommand . ' ' . $message->body, $output, $result);
                 return $result;
             };
@@ -74,7 +73,7 @@ class CakephpRabbitMQ
         $retryTime = $m($config['retry_time'], 'ms');
 
         // Internal callback function
-        return function($message) use ($key, $callback, $retryMax, $retryTime) {
+        return function ($message) use ($key, $callback, $retryMax, $retryTime) {
             $c = new ColorfulConsole();
             $c('default', sprintf("[*] Queue '%s' received message : '%s'", $key, $message->body));
             $result = call_user_func_array($callback, [$message]);
@@ -83,7 +82,7 @@ class CakephpRabbitMQ
                 $headers = $message->get('application_headers');
                 $xDeath = $headers->getNativeData()['x-death'];
                 $retryCount = $xDeath[1]['count'];
-            // The message would not have the header at first time
+                // The message would not have the header at first time
             } catch (\OutOfBoundsException $e) {
                 $retryCount = 0;
             }
@@ -93,13 +92,13 @@ class CakephpRabbitMQ
                 // Retry
                 if ($retryCount < $retryMax) {
                     $c('warning', sprintf("[!] Failed to process the message, retry after %s (retried %d times)", $retryTime, $retryCount));
-                // Exceeded maximum retry
+                    // Exceeded maximum retry
                 } else {
                     $c('error', sprintf("[X] Failed to process the message and exceeded maximum retry count of %d, dropping the message", $retryMax));
                     // Drop the message by sending ack
                     $result = 0;
                 }
-            // On success
+                // On success
             } else {
                 $c('success', sprintf("[√] Success to process the message"));
             }
@@ -116,10 +115,10 @@ class CakephpRabbitMQ
     }
 
     /**
-     * Send message to queue specified by key 
+     * Send message to queue specified by key
      *
-     * @param string $key
-     * @param string $message
+     * @param  string $key
+     * @param  string $message
      * @return void
      */
     public static function send(string $key, string $message)

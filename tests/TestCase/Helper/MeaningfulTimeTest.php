@@ -1,5 +1,4 @@
 <?php
-
 namespace RabbitMQ\Test\TestCase\Helper;
 
 use RabbitMQ\Helper\MeaningfulTime;
