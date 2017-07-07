@@ -17,8 +17,7 @@ class ColorfulConsoleTest extends TestCase
             $c('warning', 'yellow');
             $c('error', 'red');
             ob_end_clean();
-        }
-        catch(Exception $e) {
+        } catch (Exception $e) {
             $this->fail();
         }
 
