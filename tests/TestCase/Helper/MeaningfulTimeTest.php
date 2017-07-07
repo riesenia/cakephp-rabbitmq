@@ -70,12 +70,12 @@ class MeaningfulTimeTest extends TestCase
     {
         $m = new MeaningfulTime();
         $this->assertEquals(
-            '1 hr, 12 mins, 3 s, 300 ms', 
+            '1 hr, 12 mins, 3 s, 300 ms',
             $m(
                 1 * 60 * 60 * 1000 +
                 12 * 60 * 1000 +
                 3 * 1000 +
-                300, 
+                300,
                 'ms'
             )
         );
