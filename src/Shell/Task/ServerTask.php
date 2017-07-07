@@ -1,5 +1,4 @@
 <?php
-
 namespace RabbitMQ\Shell\Task;
 
 use RabbitMQ\CakephpRabbitMQ;

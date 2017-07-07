@@ -1,5 +1,4 @@
 <?php
-
 namespace RabbitMQ\Helper;
 
 /**
@@ -10,13 +9,13 @@ class MeaningfulTime
     /**
      * Return time in user-friendly time format
      *
-     * @param int $time
-     * @param string $type
+     * @param  int    $time
+     * @param  string $type
      * @return string
      */
     public function __invoke(int $time, string $type)
     {
-        switch($type) {
+        switch ($type) {
             case 'min':
                 return $this->_parseMinute($time);
             case 's':
@@ -31,7 +30,7 @@ class MeaningfulTime
     /**
      * Parse millisecond
      *
-     * @param int $ms
+     * @param  int $ms
      * @return string
      */
     protected function _parseMillisecond(int $ms)
@@ -53,7 +52,7 @@ class MeaningfulTime
     /**
      * Parse second
      *
-     * @param int $s
+     * @param  int $s
      * @return string
      */
     protected function _parseSecond($s)
@@ -75,7 +74,7 @@ class MeaningfulTime
     /**
      * Parse minute
      *
-     * @param int $min
+     * @param  int $min
      * @return string
      */
     protected function _parseMinute($min)
@@ -105,7 +104,7 @@ class MeaningfulTime
     /**
      * Parse hour
      *
-     * @param int $hr
+     * @param  int $hr
      * @return string
      */
     protected function _parseHour($hr)

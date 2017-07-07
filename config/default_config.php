@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Default configuration for a queue
  */
