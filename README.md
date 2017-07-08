@@ -81,7 +81,7 @@ Example configuration (i.e. in your *config/app.php*):
     ]
 ```
 
-Every key in the configuration is an alias for a specific queue. Key `server` is reserved for definition of the ZeroMQ connection.
+Every key in the configuration is an alias for a specific queue. Key `server` is reserved for definition of the RabbitMQ connection.
 
 ### Basic Configuration keys
 
