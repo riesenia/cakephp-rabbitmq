@@ -78,11 +78,7 @@ class MeaningfulTime
     protected function _parseMinute($min)
     {
         if ($min < 60) {
-            if ($min == 1) {
-                return sprintf('%d min', $min);
-            } else {
-                return sprintf('%d mins', $min);
-            }
+            return sprintf('%d ' . ($min == 1 ? 'min' : 'mins'), $min);
         }
         
         $hr = floor($min / 60);
@@ -90,10 +86,8 @@ class MeaningfulTime
         
         if ($min == 0) {
             return $this->_parseHour($hr);
-        } elseif ($min == 1) {
-            return $this->_parseHour($hr) . sprintf(', %d min', $min);
         }
-        return $this->_parseHour($hr) . sprintf(', %d mins', $min);
+        return $this->_parseHour($hr) . sprintf(', %d ' . ($min == 1 ? 'min' : 'mins'), $min);
     }
 
     /**
@@ -104,10 +98,6 @@ class MeaningfulTime
      */
     protected function _parseHour($hr)
     {
-        if ($hr == 1) {
-            return sprintf('%d hr', $hr);
-        } else {
-            return sprintf('%d hrs', $hr);
-        }
+        return sprintf('%d ' . ($hr == 1 ? 'hr' : 'hrs'), $hr);
     }
 }
