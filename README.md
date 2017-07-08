@@ -1,9 +1,11 @@
 # RabbitMQ for CakePHP
 
-[![Build Status](https://travis-ci.org/chanpete/cakephp-rabbitmq.svg?branch=master)](https://travis-ci.org/chanpete/cakephp-rabbitmq)
+[![Build Status](https://img.shields.io/travis/riesenia/cakephp-rabbitmq/master.svg?style=flat-square)](https://travis-ci.org/riesenia/cakephp-rabbitmq)
+[![Latest Version](https://img.shields.io/packagist/v/riesenia/cakephp-rabbitmq.svg?style=flat-square)](https://packagist.org/packages/riesenia/cakephp-rabbitmq)
+[![Total Downloads](https://img.shields.io/packagist/dt/riesenia/cakephp-rabbitmq.svg?style=flat-square)](https://packagist.org/packages/riesenia/cakephp-rabbitmq)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
-This plugin is for CakePHP 3.x that send and recevie messages by use of [RabbitMQ](https://www.rabbitmq.com/). 
+This plugin is for CakePHP 3.x and simplifies using [RabbitMQ](https://www.rabbitmq.com/) in CakePHP application. 
 
 ## Installation
 
@@ -13,22 +15,57 @@ Using composer
 composer require riesenia/cakephp-rabbitmq
 ```
 
-## Bootstrap
-
-Add the following to your `config/bootstrap.php` to load the plugin.
+Load plugin in *config/bootstrap.php*
 
 ```php
 Plugin::load('RabbitMQ');
 ```
 
-## Configuration
+## Usage
 
-Example configurations:
+RabbitMQ comes with a built-in shell that listens to defined queues and forwards messages to the callback specified in the configuration.
+
+To start the server run:
+
+```bash
+bin/cake rabbitmq server
+```
+
+To listen to specified queues only, pass their aliases as arguments:
+
+```bash
+bin/cake rabbitmq server email sms
+```
+
+### Send
+
+To send a message to a queue simply use `send` method:
 
 ```php
-    /**
-     * Example configuration
-     */
+use RabbitMQ\CakephpRabbitMQ as MQ;
+
+MQ::send('email', 'this is a message');
+```
+
+### Listen
+
+If you want to run the server inside your own shell, use `listen` method:
+
+```php
+use RabbitMQ\CakephpRabbitMQ as MQ;
+
+// this will listen to all queues defined in the configuration file
+MQ::listen();
+
+// this will listen only to passed queues
+MQ::listen(['email']);
+```
+
+## Configuration
+
+Example configuration (i.e. in your *config/app.php*):
+
+```php
     'Riesenia.CakephpRabbitMQ' => [
         'server' => [
             'host' => '127.0.0.1',
@@ -40,127 +77,65 @@ Example configurations:
             'cake_command' => 'email send',
             'retry_time' => 15 * 60 * 1000,
             'retry_max' => 3
-        ],
-    ],
+        ]
+    ]
 ```
 
-Put the configuration within the namespace `Riesenia.CakephpRabbitMQ`.
-
-It's an associative array where every key is the alias for a specific queue configuration (except for `server` which state the configurations to connect to the server).
-
-That is `email` in our example. So when you need to send a message to the email queue, you just call `CakephpRabbitMQ::send('email', 'this is a message');`.
+Every key in the configuration is an alias for a specific queue. Key `server` is reserved for definition of the ZeroMQ connection.
 
 ### Basic Configuration keys
 
-Below are just the basic configuration keys, for complete configuration keys, please look at [Complete Configuration](#complete-configuration-keys).
+Below are just basic configuration keys. For complete configuration see a section below.
 
-#### server
-
-- `host` *(string)* - url to connect to the RabbitMQ server
-- `port` *(int)* - port to connect to the RabbitMQ server
-- `user` *(string)* - username to connect to the RabbitMQ server
-- `password` *(string)* - password to connect to the RabbitMQ server
-
-#### queue
-
-- `retry` *(bool)* - retry on callback return failed
+- `retry` *(bool)* - retry if operation failed
 - `retry_time` *(int)* - retry period (in ms)
 - `retry_max` *(int)* - maximum retry times
-- `cake_command` *(string)* - on of the callback type, please look at below section for most details. 
 
-## Callback
+### Callback
 
-There is three type of callback available: `callback`, `command`, `cake_command`.
+There are three types of callback available: `callback`, `command` and `cake_command`. **Please specify only one type of callback!** If retry is enabled, the **callback must return a status code** to indicate whether the process was successful or not. **Return 0 if successful, any other number means fail.**
 
-**Notice: You must specify one and only one callback!**
-
-### cake_command
+#### command
 *(string)*
 
-It will execute a cake command when the queue recevied a message. For example,
+This will execute a defined command. For example a configuration
+
+```php
+        'command' => 'rm'
+```
+
+will execute `rm <message>` command.
+
+#### cake_command
+*(string)*
+
+This is a shortage for a *bin/cake* command. For example a configuration
+
 ```php
         'cake_command' => 'email send'
 ```
-will execute `bin/cake email send <message>` when recevied a message.
 
-### command
-*(string)*
+will execute `bin/cake email send <message>` command. 
 
-It will execute a bash command when the queue recevied a message. For example,
-```php
-        'command' => 'rm -rf'
-```
-will execute `rm -rf <message>` when recevied a message.
-
-### callback
+#### callback
 *(callable)*
 
-It will call the callback function when the queue recevied a message. For example,
-```php
-        'callback' => [new App/Shell/Mailer() ,'sendEmail']
-```
-will call the `sendEmail($message)` function when recevied a message.
-
-**Notice: using `callback` will recevie the raw AMQPMessage**
-
-The message you send is inside `$message->body`.
-
-For more detail on PHP callable, please visit [PHP callable documentation](http://php.net/manual/en/language.types.callable.php)
-
-## Usage
-
-### Server
-
-RabbitMQ comes with a built-in shell that listen to the queue and forward the message to the callback specified in the configuration.
-
-To start the server, just run:
-```bash
-bin/cake rabbitmq server
-```
-
-To listen only certain queue, pass their alias as arguments to commad:
-```bash
-bin/cake rabbitmq server email sms
-```
-
-### Callback return
-
-If retry is enable, the **callback must retrun a status code** to indicate whether the process of the message is successful or not. 
-
-**Return 0 mean successful and all the other number means failed.**
-
-### Send
-
-To send a message to a queue is easy, just run:
-```php
-CakephpRabbitMQ::send('email', 'this is a message');
-```
-
-### Listen
-
-If you want to start the server inside your shell, you can call:
-```php
-CakephpRabbitMQ::listen();
-```
-It will listen all queues stated in the configuration.
-
----
-
-If you want to listen a subset of queues, pass a array with queue alias as argument:
-```php
-CakephpRabbitMQ::listen(['email']);
-```
-
-# Complete Configuration keys
-
-## server
-
-Please visit [RabbitMQ documentation](https://www.rabbitmq.com/amqp-0-9-1-reference.html) and [php-amqplib](https://github.com/php-amqplib/php-amqplib) for more detail on each configuration key.
+This will call the callback function. For example a configuration
 
 ```php
-/**
-* RabbitMQ server configuration
-*/
+        'callback' => [new App/Mailer/MyMailer() ,'sendEmail']
+```
+
+will call the `sendEmail($message)` on `MyMailer` object. Please notice that **callback function will recevie the raw AMQPMessage**. The message you sent can be accessed using `$message->body`. For more details on PHP callable, see [PHP documentation](http://php.net/manual/en/language.types.callable.php).
+
+
+### Complete Configuration keys
+
+Below are the default values for all configuration keys. Please see the RabbitMQ documentation for more details on each configuration key.
+
+#### server
+
+```php
 'server' => [
     'host' => 'localhost',
     'port' => 5672,
@@ -179,14 +154,9 @@ Please visit [RabbitMQ documentation](https://www.rabbitmq.com/amqp-0-9-1-refere
  ];
 ```
 
-## queue
-
-Please visit [RabbitMQ documentation](https://www.rabbitmq.com/amqp-0-9-1-reference.html) for the meaning of each configuration key.
+#### queue
 
 ```php
-/**
-* Queue configuration
-*/
 '<alias>' => [
     // Main queue
     'exchange' => [
