@@ -21,13 +21,11 @@ class CakephpRabbitMQ
     public static function listen(array $keys = [])
     {
         $server = Config::getServer();
-        if (empty($keys)) {
-            $configs = Config::getAllConfigs();
-        } else {
-            $configs = Config::getConfigs($keys);
-        }
+        $configs = empty($keys) ? Config::getAllConfigs() : Config::getConfigs($keys);
 
+        // Generate callback according to provided configs
         foreach ($configs as $key => $config) {
+            // Only generate for selected keys or all if keys is empty
             if (empty($keys) || in_array($key, $keys)) {
                 $configs[$key]['_callback'] = static::_callback($key, $config);
             } else {
@@ -53,14 +51,14 @@ class CakephpRabbitMQ
         // Callable
         if (!empty($config['callback'])) {
             $callback = $config['callback'];
-            // Command
+        // Command
         } elseif (!empty($config['command'])) {
             $command = $config['command'];
             $callback = function ($message) use ($command) {
                 exec($command . ' ' . $message->body, $output, $result);
                 return $result;
             };
-            // Cakephp command
+        // Cakephp command
         } elseif (!empty($config['cake_command'])) {
             $cakeCommand = $config['cake_command'];
             $callback = function ($message) use ($cakeCommand) {
@@ -76,7 +74,7 @@ class CakephpRabbitMQ
         return function ($message) use ($key, $callback, $retryMax, $retryTime) {
             $c = new ColorfulConsole();
             $c('default', sprintf("[*] Queue '%s' received message : '%s'", $key, $message->body));
-            $result = call_user_func_array($callback, [$message]);
+            $result = call_user_func($callback, $message);
             
             try {
                 $headers = $message->get('application_headers');
@@ -123,9 +121,6 @@ class CakephpRabbitMQ
      */
     public static function send(string $key, string $message)
     {
-        $server = Config::getServer();
-        $config = Config::get($key);
-
-        RabbitMQ::send($server, $config, $message);
+        RabbitMQ::send(Config::getServer(), Config::get($key), $message);
     }
 }

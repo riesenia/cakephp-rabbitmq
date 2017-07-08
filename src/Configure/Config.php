@@ -25,7 +25,7 @@ class Config
     protected static $_server = [];
 
     /**
-     * Get all queue configurations (execpt server config)
+     * Get all queue configurations (except server config)
      *
      * @return array all queue configurations
      */

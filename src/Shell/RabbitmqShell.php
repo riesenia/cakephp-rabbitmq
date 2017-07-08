@@ -2,40 +2,10 @@
 namespace RabbitMQ\Shell;
 
 use RabbitMQ\CakephpRabbitMQ;
-
 use Cake\Console\Shell;
 
 class RabbitmqShell extends Shell
 {
-    /**
-     * Tasks to load and instantiate
-     *
-     * @var array
-     */
-    public $tasks = ['RabbitMQ.Server'];
-
-    /**
-     * Return option parser instance
-     *
-     * @return Cake\Console\ConsoleOptionParser
-     */
-    public function getOptionParser()
-    {
-        $parser = parent::getOptionParser();
-
-        $parser->description('Cakephp-RabbitMQ shell')
-            ->addSubcommands(
-                [
-                'server' => [
-                    'help' => 'Start the server',
-                    'parser' => $this->Server->getOptionParser()
-                ]
-                ]
-            );
-
-        return $parser;
-    }
-
     /**
      * Displays a header for the shell
      *
@@ -49,16 +19,14 @@ class RabbitmqShell extends Shell
     }
 
     /**
-     * Main method
+     * Listen to queues
      *
-     * @return bool|int success or error code
+     * @return void
      */
     public function main()
     {
+        $this->out('<info>[*] Starting to listen messages. Press CTRL+C to exit</info>');
         $this->out();
-        $this->out('For usage and list of available commands use <info>`cake server --help`</info>');
-        $this->out();
-
-        return true;
+        CakephpRabbitMQ::listen($this->args);
     }
 }
