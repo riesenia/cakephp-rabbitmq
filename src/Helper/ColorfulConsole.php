@@ -13,7 +13,7 @@ class ColorfulConsole
         'warning' => '33',  // Yellow
         'error' => '31'     // Red
     ];
-    
+
     /**
      * Print a colored message according to the state provided
      *

@@ -48,18 +48,18 @@ class CakephpRabbitMQ
         // Generate the callback according to the callback type provided
         $callback = null;
         
-        // Callable
         if (!empty($config['callback'])) {
+            // Callable
             $callback = $config['callback'];
-        // Command
         } elseif (!empty($config['command'])) {
+            // Command
             $command = $config['command'];
             $callback = function ($message) use ($command) {
                 exec($command . ' ' . $message->body, $output, $result);
                 return $result;
             };
-        // Cakephp command
         } elseif (!empty($config['cake_command'])) {
+            // Cakephp command
             $cakeCommand = $config['cake_command'];
             $callback = function ($message) use ($cakeCommand) {
                 exec('bin' . DS . 'cake ' . $cakeCommand . ' ' . $message->body, $output, $result);

@@ -21,7 +21,7 @@ class RabbitMQ
     {
         $connection = static::_newAMQPConnection($server);
         $channel = $connection->channel();
-        
+
         foreach ($configs as $config) {
             static::_declareExchange($channel, $config['exchange']);
             static::_declareQueue($channel, $config['queue']);

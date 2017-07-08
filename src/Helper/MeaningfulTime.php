@@ -38,15 +38,14 @@ class MeaningfulTime
         if ($ms < 1000) {
             return sprintf('%d ms', $ms);
         }
-        
+
         $s = floor($ms / 1000);
         $ms = $ms % 1000;
         
         if ($ms == 0) {
             return $this->_parseSecond($s);
-        } else {
-            return $this->_parseSecond($s) . sprintf(', %d ms', $ms);
         }
+        return $this->_parseSecond($s) . sprintf(', %d ms', $ms);
     }
 
     /**
@@ -66,9 +65,8 @@ class MeaningfulTime
         
         if ($s == 0) {
             return $this->_parseMinute($min);
-        } else {
-            return $this->_parseMinute($min) . sprintf(', %d s', $s);
         }
+        return $this->_parseMinute($min) . sprintf(', %d s', $s);
     }
 
     /**
@@ -94,9 +92,8 @@ class MeaningfulTime
             return $this->_parseHour($hr);
         } elseif ($min == 1) {
             return $this->_parseHour($hr) . sprintf(', %d min', $min);
-        } else {
-            return $this->_parseHour($hr) . sprintf(', %d mins', $min);
         }
+        return $this->_parseHour($hr) . sprintf(', %d mins', $min);
     }
 
     /**
