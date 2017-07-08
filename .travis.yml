@@ -1,15 +1,21 @@
 language: php
 
 php:
-  - 7.0
-  - 7.1
+    - 7.0
+    - 7.1
 
 cache:
-  directories:
-    - $HOME/.composer/cache/files
+    directories:
+        - $HOME/.composer/cache/files
 
 before_script:
-  - composer install --prefer-dist
+    - composer install --prefer-dist
+
+script:
+    - vendor/bin/phpunit --coverage-clover=coverage.xml
+
+after_success:
+    - bash <(curl -s https://codecov.io/bash)
 
 notifications:
   email: false
