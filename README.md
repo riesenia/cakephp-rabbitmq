@@ -128,7 +128,6 @@ This will call the callback function. For example a configuration
 
 will call the `sendEmail($message)` on `MyMailer` object. Please notice that **callback function will recevie the raw AMQPMessage**. The message you sent can be accessed using `$message->body`. For more details on PHP callable, see [PHP documentation](http://php.net/manual/en/language.types.callable.php).
 
-
 ### Complete Configuration keys
 
 Below are the default values for all configuration keys. Please see the RabbitMQ documentation for more details on each configuration key.
