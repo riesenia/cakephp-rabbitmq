@@ -28,7 +28,7 @@ RabbitMQ comes with a built-in shell that listens to defined queues and forwards
 To start the server run:
 
 ```bash
-bin/cake rabbitmq server
+bin/cake rabbitmq
 ```
 
 To listen to specified queues only, pass their aliases as arguments:
