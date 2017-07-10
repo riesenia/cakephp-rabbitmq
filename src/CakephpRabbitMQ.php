@@ -25,12 +25,7 @@ class CakephpRabbitMQ
 
         // Generate callback according to provided configs
         foreach ($configs as $key => $config) {
-            // Only generate for selected keys or generate all if keys is empty
-            if (empty($keys) || in_array($key, $keys)) {
-                $configs[$key]['_callback'] = static::_callback($key, $config);
-            } else {
-                unset($configs[$key]);
-            }
+            $configs[$key]['_callback'] = static::_generateInternalCallback($key, $config);
         }
 
         RabbitMQ::listen($server, $configs);
@@ -43,9 +38,9 @@ class CakephpRabbitMQ
      * @param  array  $config
      * @return function($message)
      */
-    protected static function _callback(string $key, array $config)
+    protected static function _generateInternalCallback(string $key, array $config)
     {
-        $callback = static::_generateCallback($key, $config);
+        $callback = static::_generateUserCallback($key, $config);
 
         $retryMax = $config['retry_max'];
         $m = new MeaningfulTime();
@@ -100,49 +95,40 @@ class CakephpRabbitMQ
      * @param array $config
      * @return callable|function($message)
      */
-    protected static function _generateCallback(string $key, array $config)
+    protected static function _generateUserCallback(string $key, array $config)
     {
         // Generate the callback according to the callback type provided
-        $callback = null;
-        $numberOfCallback = 0;
-        
-        if (!empty($config['callback'])) {
+
+        if (isset($config['callback'])) {
             // Callable
             $callback = $config['callback'];
             if (!is_callable($callback)) {
                 throw new \InvalidArgumentException('The callback provided in queue "' . $key . '" is not a valid callable');
             }
-            $numberOfCallback++;
+            return $callback;
         }
         
-        if (!empty($config['command'])) {
+        if (isset($config['command'])) {
             // Command
             $command = $config['command'];
             $callback = function ($message) use ($command) {
                 exec($command . ' ' . $message->body, $output, $result);
                 return $result;
             };
-            $numberOfCallback++;
+            return $callback;
         }
         
-        if (!empty($config['cake_command'])) {
+        if (isset($config['cake_command'])) {
             // Cakephp command
             $cakeCommand = $config['cake_command'];
             $callback = function ($message) use ($cakeCommand) {
                 exec('bin' . DS . 'cake ' . $cakeCommand . ' ' . $message->body, $output, $result);
                 return $result;
             };
-            $numberOfCallback++;
+            return $callback;
         }
 
-        // Check one and only one callback is provided
-        if ($numberOfCallback < 1) {
-            throw new \InvalidArgumentException('Queue "' . $key . '" has no valid callback provided');
-        } elseif ($numberOfCallback > 1) {
-            throw new \InvalidArgumentException('Queue "' . $key . '" has too many callbacks provided');
-        }
-
-        return $callback;
+        throw new \InvalidArgumentException('Queue "' . $key . '" has no valid callback provided');
     }
 
     /**

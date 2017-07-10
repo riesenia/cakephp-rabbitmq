@@ -53,9 +53,9 @@ return [
     'retry_routing_key' => '__GENERATE__',
 
     // Callback types
-    'callback' => [],
-    'cake_command' => '',
-    'command' => '',
+    'callback' => null,
+    'cake_command' => null,
+    'command' => null,
 
     // Basic qos
     'basic_qos' => [
