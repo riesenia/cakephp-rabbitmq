@@ -100,4 +100,12 @@ class ConfigTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         Config::get('server');
     }
+
+    public function testGetConfigsWithKeys()
+    {
+        $configs = Config::getConfigs(['min', 'retry_15s_with_max_3_times', 'custom_setting']);
+        $this->assertTextEquals(3, count($configs));
+        $this->assertTextEquals('min_exchange', $configs['min']['exchange']['name']);
+        $this->assertTextEquals('q', $configs['custom_setting']['queue']['name']);
+    }
 }
