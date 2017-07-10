@@ -40,13 +40,13 @@ class ConfigTest extends TestCase
         $config = Config::get('min');
 
         $queueArgs = $config['queue']['arguments'];
-        $this->assertTextEquals(null, $queueArgs['x-dead-letter-exchange']);
-        $this->assertTextEquals(null, $queueArgs['x-dead-letter-routing-key']);
+        $this->assertTextEquals(false, isset($queueArgs['x-dead-letter-exchange']));
+        $this->assertTextEquals(false, isset($queueArgs['x-dead-letter-routing-key']));
 
         $retryQueueArgs = $config['retry_queue']['arguments'];
-        $this->assertTextEquals(null, $retryQueueArgs['x-message-ttl']);
-        $this->assertTextEquals(null, $retryQueueArgs['x-dead-letter-exchange']);
-        $this->assertTextEquals(null, $retryQueueArgs['x-dead-letter-routing-key']);
+        $this->assertTextEquals(false, isset($retryQueueArgs['x-message-ttl']));
+        $this->assertTextEquals(false, isset($retryQueueArgs['x-dead-letter-exchange']));
+        $this->assertTextEquals(false, isset($retryQueueArgs['x-dead-letter-routing-key']));
     }
 
     public function testRetryBindingRouteGeneration()
