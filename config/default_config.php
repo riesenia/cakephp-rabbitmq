@@ -24,7 +24,7 @@ return [
         'arguments' => []
     ],
     'routing_key' => '__GENERATE__',
-    
+
     // Retry setting
     'retry' => true,
     'retry_time' => 5 * 60 * 1000, // 5 mins

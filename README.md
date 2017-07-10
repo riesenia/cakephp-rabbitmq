@@ -28,7 +28,7 @@ RabbitMQ comes with a built-in shell that listens to defined queues and forwards
 To start the server run:
 
 ```bash
-bin/cake rabbitmq server
+bin/cake rabbitmq
 ```
 
 To listen to specified queues only, pass their aliases as arguments:
@@ -81,7 +81,7 @@ Example configuration (i.e. in your *config/app.php*):
     ]
 ```
 
-Every key in the configuration is an alias for a specific queue. Key `server` is reserved for definition of the ZeroMQ connection.
+Every key in the configuration is an alias for a specific queue. Key `server` is reserved for definition of the RabbitMQ connection.
 
 ### Basic Configuration keys
 
