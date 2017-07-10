@@ -25,7 +25,7 @@ class CakephpRabbitMQ
 
         // Generate callback according to provided configs
         foreach ($configs as $key => $config) {
-            // Only generate for selected keys or all if keys is empty
+            // Only generate for selected keys or generate all if keys is empty
             if (empty($keys) || in_array($key, $keys)) {
                 $configs[$key]['_callback'] = static::_callback($key, $config);
             } else {
@@ -45,27 +45,8 @@ class CakephpRabbitMQ
      */
     protected static function _callback(string $key, array $config)
     {
-        // Generate the callback according to the callback type provided
-        $callback = null;
-        
-        if (!empty($config['callback'])) {
-            // Callable
-            $callback = $config['callback'];
-        } elseif (!empty($config['command'])) {
-            // Command
-            $command = $config['command'];
-            $callback = function ($message) use ($command) {
-                exec($command . ' ' . $message->body, $output, $result);
-                return $result;
-            };
-        } elseif (!empty($config['cake_command'])) {
-            // Cakephp command
-            $cakeCommand = $config['cake_command'];
-            $callback = function ($message) use ($cakeCommand) {
-                exec('bin' . DS . 'cake ' . $cakeCommand . ' ' . $message->body, $output, $result);
-                return $result;
-            };
-        }
+        $callback = static::_generateCallback($key, $config);
+
         $retryMax = $config['retry_max'];
         $m = new MeaningfulTime();
         $retryTime = $m($config['retry_time'], 'ms');
@@ -80,8 +61,8 @@ class CakephpRabbitMQ
                 $headers = $message->get('application_headers');
                 $xDeath = $headers->getNativeData()['x-death'];
                 $retryCount = $xDeath[1]['count'];
-                // The message would not have the header at first time
             } catch (\OutOfBoundsException $e) {
+                // The message would not have the header at first time
                 $retryCount = 0;
             }
 
@@ -110,6 +91,58 @@ class CakephpRabbitMQ
                 $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
             }
         };
+    }
+
+    /**
+     * Generate callback according to the config of user
+     *
+     * @param string $key
+     * @param array $config
+     * @return callable|function($message)
+     */
+    protected static function _generateCallback(string $key, array $config)
+    {
+        // Generate the callback according to the callback type provided
+        $callback = null;
+        $numberOfCallback = 0;
+        
+        if (!empty($config['callback'])) {
+            // Callable
+            $callback = $config['callback'];
+            if (!is_callable($callback)) {
+                throw new \InvalidArgumentException('The callback provided in queue "' . $key . '" is not a valid callable');
+            }
+            $numberOfCallback++;
+        }
+        
+        if (!empty($config['command'])) {
+            // Command
+            $command = $config['command'];
+            $callback = function ($message) use ($command) {
+                exec($command . ' ' . $message->body, $output, $result);
+                return $result;
+            };
+            $numberOfCallback++;
+        }
+        
+        if (!empty($config['cake_command'])) {
+            // Cakephp command
+            $cakeCommand = $config['cake_command'];
+            $callback = function ($message) use ($cakeCommand) {
+                exec('bin' . DS . 'cake ' . $cakeCommand . ' ' . $message->body, $output, $result);
+                return $result;
+            };
+            $numberOfCallback++;
+        }
+
+        // Check one and only one callback is provided
+        if ($numberOfCallback < 1) {
+            throw new \InvalidArgumentException('Queue "' . $key . '" has no valid callback provided');
+        } elseif ($numberOfCallback > 1) {
+            throw new \InvalidArgumentException('Queue "' . $key . '" has too many callbacks provided');
+        }
+
+        return $callback;
     }
 
     /**

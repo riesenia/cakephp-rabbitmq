@@ -76,20 +76,6 @@ class Config
             throw new \InvalidArgumentException('Server configuration should not get by ' . __FUNCTION__ . ' function');
         }
 
-        // Check one and only one callback is provided
-        $callbackCount = 0;
-        foreach (self::CALLBACK_TYPE as $callbackType) {
-            $callbackType = '.' . $callbackType;
-            if (!empty(Configure::read(self::CONFIGURE_KEY_PREFIX . $key . $callbackType))) {
-                $callbackCount++;
-            }
-        }
-        if ($callbackCount == 0) {
-            throw new \InvalidArgumentException('Queue "' . $key . '" has no valid callback');
-        } elseif ($callbackCount > 1) {
-            throw new \InvalidArgumentException('Queue "' . $key . '" has too many callback');
-        }
-
         // Merge user config and default config
         $defaultConfig = static::_getDefaultConfig($key);
         $userConfig = Configure::read(self::CONFIGURE_KEY_PREFIX . $key);
