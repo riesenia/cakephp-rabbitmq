@@ -83,6 +83,13 @@ class RabbitMQ
         );
     }
 
+    /**
+     * Declare queue according to the config provided
+     *
+     * @param AMQPChannel $channel
+     * @param array $config
+     * @return void
+     */
     protected static function _declare(AMQPChannel $channel, array $config)
     {
         static::_declareExchange($channel, $config['exchange']);
