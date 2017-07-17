@@ -4,6 +4,16 @@
     "keywords": ["cakephp", "rabbitmq"],
     "type": "cakephp-plugin",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Pete Chan",
+            "email": "pete.chan@riesenia.com"
+        },
+        {
+            "name": "Tomas Saghy",
+            "email": "segy@riesenia.com"
+        }
+    ],
     "require": {
         "cakephp/cakephp": "~3.0",
         "php-amqplib/php-amqplib": "^2.6"

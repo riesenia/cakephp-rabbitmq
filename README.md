@@ -5,7 +5,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/riesenia/cakephp-rabbitmq.svg?style=flat-square)](https://packagist.org/packages/riesenia/cakephp-rabbitmq)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
-This plugin is for CakePHP 3.x and simplifies using [RabbitMQ](https://www.rabbitmq.com/) in CakePHP application. 
+This plugin is for CakePHP 3.x and simplifies using [RabbitMQ](https://www.rabbitmq.com/) in CakePHP application.
 
 ## Installation
 
@@ -115,7 +115,7 @@ This is a shortage for a *bin/cake* command. For example a configuration
         'cake_command' => 'email send'
 ```
 
-will execute `bin/cake email send <message>` command. 
+will execute `bin/cake email send <message>` command.
 
 #### callback
 *(callable)*
@@ -123,7 +123,7 @@ will execute `bin/cake email send <message>` command.
 This will call the callback function. For example a configuration
 
 ```php
-        'callback' => [new App/Mailer/MyMailer() ,'sendEmail']
+        'callback' => [new MyMailer() ,'sendEmail']
 ```
 
 will call the `sendEmail($message)` on `MyMailer` object. Please notice that **callback function will recevie the raw AMQPMessage**. The message you sent can be accessed using `$message->body`. For more details on PHP callable, see [PHP documentation](http://php.net/manual/en/language.types.callable.php).
@@ -178,7 +178,7 @@ Below are the default values for all configuration keys. Please see the RabbitMQ
         'arguments' => []
     ],
     'routing_key' => '<alias>_routing_key',
-    
+
     // Retry setting
     'retry' => true,
     'retry_time' => 5 * 60 * 1000, // 5 mins
