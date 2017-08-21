@@ -23,41 +23,7 @@ class RabbitMQ
         $channel = $connection->channel();
 
         foreach ($configs as $config) {
-            static::_declareExchange($channel, $config['exchange']);
-            static::_declareQueue($channel, $config['queue']);
-
-            $channel->queue_bind(
-                $config['queue']['name'],
-                $config['exchange']['name'],
-                $config['routing_key']
-            );
-
-            if ($config['retry']) {
-                static::_declareExchange($channel, $config['retry_exchange']);
-                static::_declareQueue($channel, $config['retry_queue']);
-
-                $channel->queue_bind(
-                    $config['retry_queue']['name'],
-                    $config['retry_exchange']['name'],
-                    $config['retry_routing_key']
-                );
-            }
-
-            $channel->basic_qos(
-                $config['basic_qos']['prefetch-size'],
-                $config['basic_qos']['prefetch-count'],
-                $config['basic_qos']['global']
-            );
-
-            $channel->basic_consume(
-                $config['queue']['name'],
-                $config['basic_consume']['consumer-tag'],
-                $config['basic_consume']['no-local'],
-                $config['basic_consume']['no-ack'],
-                $config['basic_consume']['exclusive'],
-                $config['basic_consume']['no-wait'],
-                $config['_callback']
-            );
+            static::_declare($channel, $config);
         }
 
         while (count($channel->callbacks)) {
@@ -80,6 +46,8 @@ class RabbitMQ
     {
         $connection = static::_newAMQPConnection($server);
         $channel = $connection->channel();
+
+        static::_declare($channel, $config);
 
         $amqpMessage = new AMQPMessage($messsage, ['delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT]);
 
@@ -112,6 +80,52 @@ class RabbitMQ
             $server['context'],
             $server['keepalive'],
             $server['heartbeat']
+        );
+    }
+
+    /**
+     * Declare queue according to the config provided
+     *
+     * @param AMQPChannel $channel
+     * @param array $config
+     * @return void
+     */
+    protected static function _declare(AMQPChannel $channel, array $config)
+    {
+        static::_declareExchange($channel, $config['exchange']);
+        static::_declareQueue($channel, $config['queue']);
+
+        $channel->queue_bind(
+            $config['queue']['name'],
+            $config['exchange']['name'],
+            $config['routing_key']
+        );
+
+        if ($config['retry']) {
+            static::_declareExchange($channel, $config['retry_exchange']);
+            static::_declareQueue($channel, $config['retry_queue']);
+
+            $channel->queue_bind(
+                $config['retry_queue']['name'],
+                $config['retry_exchange']['name'],
+                $config['retry_routing_key']
+            );
+        }
+
+        $channel->basic_qos(
+            $config['basic_qos']['prefetch-size'],
+            $config['basic_qos']['prefetch-count'],
+            $config['basic_qos']['global']
+        );
+
+        $channel->basic_consume(
+            $config['queue']['name'],
+            $config['basic_consume']['consumer-tag'],
+            $config['basic_consume']['no-local'],
+            $config['basic_consume']['no-ack'],
+            $config['basic_consume']['exclusive'],
+            $config['basic_consume']['no-wait'],
+            $config['_callback']
         );
     }
 

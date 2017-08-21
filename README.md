@@ -223,3 +223,13 @@ Below are the default values for all configuration keys. Please see the RabbitMQ
     ]
 ]
 ```
+
+**Notice:** Configuration except `retry_max` cannot be changed after the first run without reseting the queue.
+
+Run the following command to reset the queue:
+
+```bash
+rabbitmqctl stop_app && rabbitmqctl reset && rabbitmqctl start_app
+```
+
+**Warning: This will delete all the messages in the rabbitmq**
