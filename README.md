@@ -224,7 +224,7 @@ Below are the default values for all configuration keys. Please see the RabbitMQ
 ]
 ```
 
-**Notice:** All the config cannot be change after the first run without resetting the queue (except `retry_max`).
+**Notice:** Configuration except `retry_max` cannot be changed after the first run without reseting the queue.
 
 Run the following command to reset the queue:
 
