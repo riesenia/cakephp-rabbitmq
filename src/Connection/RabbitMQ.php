@@ -1,21 +1,20 @@
 <?php
 namespace RabbitMQ\Connection;
 
+use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
-use PhpAmqpLib\Channel\AMQPChannel;
 
 /**
- * Class for connecting to the RabbitMQ server
+ * Class for connecting to the RabbitMQ server.
  **/
 class RabbitMQ
 {
     /**
-     * Listen all queue provided in configs
+     * Listen all queue provided in configs.
      *
-     * @param  array $server
-     * @param  array $configs
-     * @return void
+     * @param array $server
+     * @param array $configs
      */
     public static function listen(array $server, array $configs)
     {
@@ -35,12 +34,11 @@ class RabbitMQ
     }
 
     /**
-     * Send message to queue that provided
+     * Send message to queue that provided.
      *
-     * @param  array  $server
-     * @param  array  $config
-     * @param  string $messsage
-     * @return void
+     * @param array  $server
+     * @param array  $config
+     * @param string $messsage
      */
     public static function send(array $server, array $config, string $messsage)
     {
@@ -58,9 +56,10 @@ class RabbitMQ
     }
 
     /**
-     * Create the connection according to the config provided
+     * Create the connection according to the config provided.
      *
-     * @param  array $server
+     * @param array $server
+     *
      * @return AMQPStreamConnection
      */
     protected static function _newAMQPConnection(array $server)
@@ -84,11 +83,10 @@ class RabbitMQ
     }
 
     /**
-     * Declare queue according to the config provided
+     * Declare queue according to the config provided.
      *
      * @param AMQPChannel $channel
-     * @param array $config
-     * @return void
+     * @param array       $config
      */
     protected static function _declare(AMQPChannel $channel, array $config)
     {
@@ -130,11 +128,10 @@ class RabbitMQ
     }
 
     /**
-     * Decalre a exchange according to the config provided
+     * Decalre a exchange according to the config provided.
      *
-     * @param  AMQPChannel $channel
-     * @param  array       $config
-     * @return void
+     * @param AMQPChannel $channel
+     * @param array       $config
      */
     protected static function _declareExchange(AMQPChannel $channel, array $config)
     {
@@ -151,11 +148,10 @@ class RabbitMQ
     }
 
     /**
-     * Decalre a queue according to the config provided
+     * Decalre a queue according to the config provided.
      *
-     * @param  AMQPChannel $channel
-     * @param  array       $config
-     * @return void
+     * @param AMQPChannel $channel
+     * @param array       $config
      */
     protected static function _declareQueue(AMQPChannel $channel, array $config)
     {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Default configuration for a queue
+ * Default configuration for a queue.
  */
 return [
     // Main queue

@@ -2,7 +2,7 @@
 namespace RabbitMQ\Helper;
 
 /**
- * Helper class for colorize the output message
+ * Helper class for colorize the output message.
  */
 class ColorfulConsole
 {
@@ -15,11 +15,10 @@ class ColorfulConsole
     ];
 
     /**
-     * Print a colored message according to the state provided
+     * Print a colored message according to the state provided.
      *
-     * @param  string $state
-     * @param  string $message
-     * @return void
+     * @param string $state
+     * @param string $message
      */
     public function __invoke(string $state, string $message)
     {

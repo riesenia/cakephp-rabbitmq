@@ -1,9 +1,9 @@
 <?php
 namespace RabbitMQ\Test\TestCase\Configure;
 
-use RabbitMQ\Configure\Config;
 use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
+use RabbitMQ\Configure\Config;
 
 class ConfigTest extends TestCase
 {
@@ -52,15 +52,15 @@ class ConfigTest extends TestCase
     public function testRetryBindingRouteGeneration()
     {
         $config = Config::get('retry_15s_with_max_3_times');
-        
+
         $queueArgs = $config['queue']['arguments'];
-        $this->assertTextEquals([ 'S', 'retry_15s_with_max_3_times_retry_exchange' ], $queueArgs['x-dead-letter-exchange']);
-        $this->assertTextEquals([ 'S', 'retry_15s_with_max_3_times_retry_routing_key' ], $queueArgs['x-dead-letter-routing-key']);
+        $this->assertTextEquals(['S', 'retry_15s_with_max_3_times_retry_exchange'], $queueArgs['x-dead-letter-exchange']);
+        $this->assertTextEquals(['S', 'retry_15s_with_max_3_times_retry_routing_key'], $queueArgs['x-dead-letter-routing-key']);
 
         $retryQueueArgs = $config['retry_queue']['arguments'];
-        $this->assertTextEquals([ 'I', 15 * 1000 ], $retryQueueArgs['x-message-ttl']);
-        $this->assertTextEquals([ 'S', 'retry_15s_with_max_3_times_exchange' ], $retryQueueArgs['x-dead-letter-exchange']);
-        $this->assertTextEquals([ 'S', 'retry_15s_with_max_3_times_routing_key' ], $retryQueueArgs['x-dead-letter-routing-key']);
+        $this->assertTextEquals(['I', 15 * 1000], $retryQueueArgs['x-message-ttl']);
+        $this->assertTextEquals(['S', 'retry_15s_with_max_3_times_exchange'], $retryQueueArgs['x-dead-letter-exchange']);
+        $this->assertTextEquals(['S', 'retry_15s_with_max_3_times_routing_key'], $retryQueueArgs['x-dead-letter-routing-key']);
     }
 
     public function testOverrideDefaultConfig()
@@ -81,12 +81,12 @@ class ConfigTest extends TestCase
         $config = Config::get('custom_setting');
 
         $queueArgs = $config['queue']['arguments'];
-        $this->assertTextEquals([ 'S', 're_ex' ], $queueArgs['x-dead-letter-exchange']);
-        $this->assertTextEquals([ 'S', 're_rk' ], $queueArgs['x-dead-letter-routing-key']);
+        $this->assertTextEquals(['S', 're_ex'], $queueArgs['x-dead-letter-exchange']);
+        $this->assertTextEquals(['S', 're_rk'], $queueArgs['x-dead-letter-routing-key']);
 
         $retryQueueArgs = $config['retry_queue']['arguments'];
-        $this->assertTextEquals([ 'S', 'ex' ], $retryQueueArgs['x-dead-letter-exchange']);
-        $this->assertTextEquals([ 'S', 'rk' ], $retryQueueArgs['x-dead-letter-routing-key']);
+        $this->assertTextEquals(['S', 'ex'], $retryQueueArgs['x-dead-letter-exchange']);
+        $this->assertTextEquals(['S', 'rk'], $retryQueueArgs['x-dead-letter-routing-key']);
     }
 
     public function testGetNotExistKey()

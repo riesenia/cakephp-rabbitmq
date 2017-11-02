@@ -1,8 +1,8 @@
 <?php
 namespace RabbitMQ\Test\TestCase\Helper;
 
-use RabbitMQ\Helper\ColorfulConsole;
 use Cake\TestSuite\TestCase;
+use RabbitMQ\Helper\ColorfulConsole;
 
 class ColorfulConsoleTest extends TestCase
 {

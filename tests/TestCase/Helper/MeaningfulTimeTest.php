@@ -1,8 +1,8 @@
 <?php
 namespace RabbitMQ\Test\TestCase\Helper;
 
-use RabbitMQ\Helper\MeaningfulTime;
 use Cake\TestSuite\TestCase;
+use RabbitMQ\Helper\MeaningfulTime;
 
 class MeaningfulTimeTest extends TestCase
 {
@@ -69,16 +69,7 @@ class MeaningfulTimeTest extends TestCase
     public function testParseMillisecondToUserFriendlyTime()
     {
         $m = new MeaningfulTime();
-        $this->assertEquals(
-            '1 hr, 12 mins, 3 s, 300 ms',
-            $m(
-                1 * 60 * 60 * 1000 +
-                12 * 60 * 1000 +
-                3 * 1000 +
-                300,
-                'ms'
-            )
-        );
+        $this->assertEquals('1 hr, 12 mins, 3 s, 300 ms', $m(1 * 60 * 60 * 1000 + 12 * 60 * 1000 + 3 * 1000 + 300, 'ms'));
     }
 
     public function testInvaildInput()

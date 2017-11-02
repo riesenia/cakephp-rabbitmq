@@ -4,7 +4,7 @@ namespace RabbitMQ\Configure;
 use Cake\Core\Configure;
 
 /**
- * Class for loading the configuration and check any error
+ * Class for loading the configuration and check any error.
  */
 class Config
 {
@@ -25,7 +25,7 @@ class Config
     protected static $_server = [];
 
     /**
-     * Get all queue configurations (except server config)
+     * Get all queue configurations (except server config).
      *
      * @return array all queue configurations
      */
@@ -33,13 +33,15 @@ class Config
     {
         $userConfigs = Configure::read(self::CONFIGURE_KEY);
         unset($userConfigs['server']);
+
         return static::getConfigs(array_keys($userConfigs));
     }
 
     /**
-     * Get queue configurations according to the keys provided
+     * Get queue configurations according to the keys provided.
      *
-     * @param  array $keys
+     * @param array $keys
+     *
      * @return array queue configurations
      */
     public static function getConfigs(array $keys)
@@ -48,17 +50,20 @@ class Config
         foreach ($keys as $key) {
             $configs[$key] = static::get($key);
         }
+
         return $configs;
     }
 
     /**
-     * Get a queue configuration according to the key
+     * Get a queue configuration according to the key.
      *
-     * @param  string $key
-     * @return array queue configuration
-     * @throws InvalidArgumentException if config specified by key not found\
+     * @param string $key
+     *
+     * @throws InvalidArgumentException if config specified by key not found
      * @throws InvalidArgumentException if key is 'server'
      * @throws InvalidArgumentException if non or more than one callback type is provided
+     *
+     * @return array queue configuration
      */
     public static function get(string $key)
     {
@@ -87,16 +92,16 @@ class Config
             $config['queue']['arguments'] = array_merge(
                 $config['queue']['arguments'],
                 [
-                'x-dead-letter-exchange' => [ 'S', $config['retry_exchange']['name'] ],
-                'x-dead-letter-routing-key' => [ 'S', $config['retry_routing_key'] ]
+                    'x-dead-letter-exchange' => ['S', $config['retry_exchange']['name']],
+                    'x-dead-letter-routing-key' => ['S', $config['retry_routing_key']]
                 ]
             );
             $config['retry_queue']['arguments'] = array_merge(
                 $config['retry_queue']['arguments'],
                 [
-                'x-message-ttl' => [ 'I', $config['retry_time'] ],
-                'x-dead-letter-exchange' => [ 'S', $config['exchange']['name'] ],
-                'x-dead-letter-routing-key' => [ 'S', $config['routing_key'] ]
+                    'x-message-ttl' => ['I', $config['retry_time']],
+                    'x-dead-letter-exchange' => ['S', $config['exchange']['name']],
+                    'x-dead-letter-routing-key' => ['S', $config['routing_key']]
                 ]
             );
         } else {
@@ -107,31 +112,12 @@ class Config
         }
 
         static::$_configs[$key] = $config;
+
         return $config;
     }
 
     /**
-     * Get and generate default configuration according to the key
-     *
-     * @param  string $key
-     * @return array default queue configuration
-     */
-    protected static function _getDefaultConfig(string $key)
-    {
-        $defaultConfig = include self::DEFAULT_CONFIG;
-        // Generate dynamic default configs
-        $defaultConfig['exchange']['name'] = $key . '_exchange';
-        $defaultConfig['queue']['name'] = $key . '_queue';
-        $defaultConfig['routing_key'] = $key . '_routing_key';
-        $defaultConfig['retry_exchange']['name'] = $key . '_retry_exchange';
-        $defaultConfig['retry_queue']['name'] = $key . '_retry_queue';
-        $defaultConfig['retry_routing_key'] = $key . '_retry_routing_key';
-
-        return $defaultConfig;
-    }
-
-    /**
-     * Get server configuration
+     * Get server configuration.
      *
      * @return array server configuration
      */
@@ -144,6 +130,29 @@ class Config
         $userServerConfigs = Configure::read(self::SERVER_CONFIGURE_KEY) ?: [];
         $defaultServerConfig = include self::SERVER_DEFAULT;
         static::$_server = array_merge($defaultServerConfig, $userServerConfigs);
+
         return static::$_server;
+    }
+
+    /**
+     * Get and generate default configuration according to the key.
+     *
+     * @param string $key
+     *
+     * @return array default queue configuration
+     */
+    protected static function _getDefaultConfig(string $key)
+    {
+        $defaultConfig = include self::DEFAULT_CONFIG;
+
+        // Generate dynamic default configs
+        $defaultConfig['exchange']['name'] = $key . '_exchange';
+        $defaultConfig['queue']['name'] = $key . '_queue';
+        $defaultConfig['routing_key'] = $key . '_routing_key';
+        $defaultConfig['retry_exchange']['name'] = $key . '_retry_exchange';
+        $defaultConfig['retry_queue']['name'] = $key . '_retry_queue';
+        $defaultConfig['retry_routing_key'] = $key . '_retry_routing_key';
+
+        return $defaultConfig;
     }
 }

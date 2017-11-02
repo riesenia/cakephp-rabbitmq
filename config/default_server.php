@@ -1,6 +1,6 @@
 <?php
 /**
- * Default configuration for the RabbitMQ server
+ * Default configuration for the RabbitMQ server.
  */
  return [
     'host' => 'localhost',
