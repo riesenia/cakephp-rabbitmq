@@ -93,7 +93,7 @@ Below are just basic configuration keys. For complete configuration see a sectio
 
 ### Callback
 
-There are three types of callback available: `callback`, `command` and `cake_command`. **Please specify only one type of callback!** If retry is enabled, the **callback must return a status code** to indicate whether the process was successful or not. **Return 0 if successful, any other number means fail.**
+There are three types of callback available: `callback`, `command` and `cake_command`. **Please specify only one type of callback!** If retry is enabled, the **callback must return a status code** to indicate whether the process was successful or not. **Return 0 if successful**, any other number means fail. **For cake shell methods return true for success** and false otherwise.
 
 #### command
 *(string)*
